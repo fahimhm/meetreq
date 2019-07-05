@@ -7,6 +7,9 @@ outlook = win32.Dispatch('outlook.application')
 import os
 from os.path import join
 
+import time
+start = time.time()
+
 for train in data.training.unique():
     train_base = data[(data.training == train) & (data.status_meetreq.isnull())]
     for date_start in train_base.waktu.unique():
@@ -54,6 +57,8 @@ for train in data.training.unique():
         mail.Body = body1 + body2 + body3
         mail.Save()
         mail.Send()
+
+        print("Meeting request untuk training " + train + " tanggal " + str(d) + " sudah terkirim.")
         
         idx = date_base.index
         data.loc[idx, 'status_meetreq'] = 'done'
@@ -61,5 +66,10 @@ for train in data.training.unique():
 os.remove(join(os.getcwd(), 'datasets', 'meetreq_training.xlsx'))
 
 writer = pd.ExcelWriter('datasets/meetreq_training.xlsx')
-data.to_excel(writer, 'training')
+data.to_excel(writer, 'training', index=False)
 writer.save()
+
+end = time.time()
+durasi = (end - start)
+print("Total seluruh proses " + str(durasi) + " detik")
+input("Press enter to exit")
