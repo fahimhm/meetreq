@@ -12,7 +12,7 @@ start = time.time()
 
 import openpyxl
 workbook = openpyxl.load_workbook("datasets/meetreq_training.xlsx")
-worksheet = workbook['Sheet1']
+worksheet = workbook['training']
 
 for train in data.training.unique():
     train_base = data[(data.training == train) & (data.status_meetreq.isnull())]
