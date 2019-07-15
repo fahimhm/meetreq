@@ -10,6 +10,10 @@ from os.path import join
 import time
 start = time.time()
 
+import openpyxl
+workbook = openpyxl.load_workbook("datasets/meetreq_training.xlsx")
+worksheet = workbook['Sheet1']
+
 for train in data.training.unique():
     train_base = data[(data.training == train) & (data.status_meetreq.isnull())]
     for date_start in train_base.waktu.unique():
@@ -58,17 +62,14 @@ for train in data.training.unique():
         mail.Save()
         mail.Send()
 
+        # --update excel
+        for i in date_base.index:
+            mycell = worksheet.cell(row=(i+2), column=14)
+            mycell.value = 'done'
+        workbook.save("datasets/meetreq_training.xlsx")
+
         print("Meeting request untuk training " + train + " tanggal " + str(d) + " sudah terkirim.")
         
-        idx = date_base.index
-        data.loc[idx, 'status_meetreq'] = 'done'
-
-os.remove(join(os.getcwd(), 'datasets', 'meetreq_training.xlsx'))
-
-writer = pd.ExcelWriter('datasets/meetreq_training.xlsx')
-data.to_excel(writer, 'training', index=False)
-writer.save()
-
 end = time.time()
 durasi = (end - start)
 print("Total seluruh proses " + str(durasi) + " detik")
