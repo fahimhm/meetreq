@@ -50,9 +50,11 @@ for train in data.training.unique():
                 "hari": date_base.hari.unique()[0],
                 "tempat": date_base.meeting_room.unique()[0],
                 "trainer": date_base.trainer.unique()[0]})
+        forbody2 = date_base[['peserta', 'dept']]
+        forbody2 = forbody2.drop_cuplicates(keep='first')
         body2 = ""
-        for i in date_base.index:
-            listpeserta = "-- " + date_base.peserta[i] + " - " + date_base.dept[i] + "\n"
+        for i in forbody2.index:
+            listpeserta = "-- " + forbody2.peserta[i] + " - " + forbody2.dept[i] + "\n"
             body2 += listpeserta
         body3 = "\n\nMohon bantuan rekan-rekan untuk dapat hadir tepat waktu, mengisi evaluasi training maupun posttest (bila ada).\n" \
         "Terimakasih ya\n" \
